@@ -99,6 +99,10 @@ def main():
             st.markdown(f"**You:** {m['content']}")
         else:
             st.markdown(f"**AI:** {m['content']}")
+            if m.get('sources'):
+                st.markdown('**Sources used:**')
+                for url in m['sources']:
+                    st.markdown(f'- [{url}]({url})')
 
     prompt = st.chat_input('Ask a question about the web pages...')
     if not prompt:
@@ -113,7 +117,12 @@ def main():
             hits = rag.retrieval(prompt, embedder, index, chunks, sources, k=k)
             answer = rag.answer_question(prompt, hits, generator, max_new_tokens=max_tokens)
             st.markdown(answer)
-            st.session_state.messages.append({'role': 'assistant', 'content': answer})
+            source_urls = sorted(set(h['source'] for h in hits))
+            if source_urls:
+                st.markdown('**Sources used:**')
+                for url in source_urls:
+                    st.markdown(f'- [{url}]({url})')
+            st.session_state.messages.append({'role': 'assistant', 'content': answer, 'sources': source_urls})
 
 
 if __name__ == '__main__':
