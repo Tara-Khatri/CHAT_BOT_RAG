@@ -1,0 +1,10 @@
+beautifulsoup4
+faiss-cpu
+numpy
+pypdf
+python-dotenv
+requests
+sentence-transformers
+streamlit
+torch
+transformers
